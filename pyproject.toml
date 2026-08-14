@@ -1,0 +1,66 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "begamer-api"
+version = "0.1.0"
+description = "Local-first Steam library curator and recommendation API"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "aiosqlite>=0.21.0",
+  "alembic>=1.16.4",
+  "fastapi>=0.116.1",
+  "greenlet>=3.2.4",
+  "httpx>=0.28.1",
+  "openai>=2.8.1",
+  "pydantic-settings>=2.10.1",
+  "sqlalchemy>=2.0.43",
+  "uvicorn[standard]>=0.35.0",
+]
+
+[dependency-groups]
+dev = [
+  "mypy>=1.17.1",
+  "pytest>=8.4.1",
+  "pytest-asyncio>=1.1.0",
+  "pytest-cov>=6.2.1",
+  "respx>=0.22.0",
+  "ruff>=0.12.9",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["apps/api/src/begamer"]
+
+[tool.uv]
+package = true
+
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["apps/api/src", "apps/api/tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "ASYNC", "RUF"]
+ignore = ["B008", "RUF001"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["begamer"]
+
+[tool.pytest.ini_options]
+addopts = "-q --strict-markers --strict-config"
+asyncio_mode = "auto"
+testpaths = ["apps/api/tests"]
+
+[tool.mypy]
+python_version = "3.12"
+plugins = ["pydantic.mypy"]
+strict = true
+warn_unreachable = true
+exclude = ["apps/api/migrations"]
+
+[[tool.mypy.overrides]]
+module = ["openai.*"]
+follow_untyped_imports = true

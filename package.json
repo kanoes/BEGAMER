@@ -1,0 +1,24 @@
+{
+  "name": "begamer",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.19.0",
+  "scripts": {
+    "build": "pnpm --filter @begamer/web build",
+    "check": "pnpm check:api && pnpm check:web",
+    "check:api": "uv run ruff check apps/api && uv run ruff format --check apps/api && uv run mypy apps/api/src",
+    "check:web": "biome check apps/web && pnpm --filter @begamer/web typecheck",
+    "db:migrate": "uv run alembic -c apps/api/alembic.ini upgrade head",
+    "dev": "concurrently -n api,web -c blue,green \"pnpm dev:api\" \"pnpm dev:web\"",
+    "dev:api": "uv run uvicorn begamer.main:app --app-dir apps/api/src --reload --host 127.0.0.1 --port 8000",
+    "dev:web": "pnpm --filter @begamer/web dev",
+    "format": "uv run ruff check --fix apps/api && uv run ruff format apps/api && biome check --write apps/web",
+    "test": "pnpm test:api && pnpm test:web",
+    "test:api": "uv run pytest apps/api/tests",
+    "test:web": "pnpm --filter @begamer/web test --run"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.11",
+    "concurrently": "^9.2.1"
+  }
+}

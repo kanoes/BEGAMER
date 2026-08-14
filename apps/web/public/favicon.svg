@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>BEGAMER</title>
+  <rect width="64" height="64" rx="16" fill="#c8ff5a"/>
+  <path d="M22 24h20c7 0 12 6 12 13v4c0 5-4 9-9 9-3 0-5-1-7-4l-2-3h-8l-2 3c-2 3-4 4-7 4-5 0-9-4-9-9v-4c0-7 5-13 12-13Z" fill="#11150a"/>
+  <path d="M22 31v10M17 36h10" stroke="#c8ff5a" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="42" cy="33" r="2.5" fill="#a993ff"/>
+  <circle cx="47" cy="39" r="2.5" fill="#a993ff"/>
+</svg>
