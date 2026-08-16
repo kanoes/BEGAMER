@@ -1,0 +1,8 @@
+# Local Cloudflare Worker preview. Copy this file to .dev.vars.
+AUTH_REQUIRED=false
+GOOGLE_CLIENT_ID=
+ALLOWED_GOOGLE_EMAIL=
+SESSION_SECRET=
+STEAM_WEB_API_KEY=
+STEAM_ID=
+OPENAI_API_KEY=

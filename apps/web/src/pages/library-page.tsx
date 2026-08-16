@@ -74,7 +74,7 @@ export function LibraryPage() {
             你的每一个世界
           </h2>
           <p className="mt-2 max-w-xl text-sm leading-6 text-muted">
-            搜索、筛选和标记喜欢。所有修改只发生在 BEGAMER 本地。
+            搜索、筛选和标记喜欢。所有修改会安全同步到你的 BEGAMER 云端空间。
           </p>
         </div>
         <div className="flex items-center gap-2 text-xs text-muted">

@@ -1,0 +1,28 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "begamer",
+  "main": "src/worker.py",
+  "compatibility_date": "2026-08-16",
+  "compatibility_flags": ["python_workers", "python_dedicated_snapshot"],
+  "assets": {
+    "directory": "../web/dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "begamer",
+      "database_id": "e08f6365-2017-48d3-9d4f-7bb1f50189e1",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "vars": {
+    "AUTH_REQUIRED": "true",
+    "OPENAI_MODEL": "gpt-5.6-luna"
+  },
+  "observability": {
+    "enabled": true
+  }
+}

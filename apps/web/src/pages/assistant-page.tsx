@@ -78,7 +78,7 @@ export function AssistantPage() {
             ) : (
               <>
                 <Lightbulb aria-hidden="true" className="size-3.5 text-brand" />
-                本地策展模式
+                规则策展模式
               </>
             )}
           </div>
