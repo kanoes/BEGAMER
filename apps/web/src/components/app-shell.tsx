@@ -1,10 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Command,
   Gamepad2,
   Home,
   Layers3,
   LibraryBig,
+  LogOut,
   Moon,
   Search,
   Sparkles,
@@ -53,8 +54,17 @@ function BrandMark() {
 export function AppShell() {
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
+  const queryClient = useQueryClient();
+  const session = useQuery({ queryKey: ["auth", "me"], queryFn: api.me, retry: false });
   const dashboard = useQuery({ queryKey: ["dashboard"], queryFn: api.dashboard });
   const capabilities = useQuery({ queryKey: ["capabilities"], queryFn: api.capabilities });
+  const logout = useMutation({
+    mutationFn: api.logout,
+    onSuccess: () => {
+      queryClient.clear();
+      window.location.assign("/");
+    },
+  });
   const heading = pageTitles[location.pathname] ?? pageTitles["/"];
 
   return (
@@ -110,8 +120,18 @@ export function AppShell() {
             {capabilities.data?.active_source === "steam" ? "Steam Library" : "Demo Library"}
           </p>
           <p className="mt-1 text-xs text-muted">
-            {capabilities.data?.llm_configured ? "AI 策展已开启" : "本地策展模式"}
+            {capabilities.data?.llm_configured ? "AI 策展已开启" : "规则策展模式"}
           </p>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="mt-3 w-full justify-start px-2"
+            disabled={logout.isPending}
+            onClick={() => logout.mutate()}
+          >
+            <LogOut aria-hidden="true" className="size-3.5" />
+            退出 {session.data?.display_name ?? "账号"}
+          </Button>
         </div>
       </aside>
 
@@ -149,6 +169,17 @@ export function AppShell() {
                 ) : (
                   <Moon aria-hidden="true" className="size-4" />
                 )}
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="退出登录"
+                title="退出登录"
+                className="lg:hidden"
+                disabled={logout.isPending}
+                onClick={() => logout.mutate()}
+              >
+                <LogOut aria-hidden="true" className="size-4" />
               </Button>
               {dashboard.isLoading ? (
                 <Skeleton className="size-9 rounded-full" />

@@ -1,5 +1,17 @@
 export type GameStatus = "unplayed" | "recent" | "deep" | "backlog";
 
+export interface SessionUser {
+  sub: string;
+  email: string;
+  display_name: string;
+  avatar_url: string | null;
+}
+
+export interface AuthConfig {
+  auth_required: boolean;
+  google_client_id: string | null;
+}
+
 export interface Account {
   steam_id: string;
   display_name: string;

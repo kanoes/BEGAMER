@@ -36,7 +36,7 @@ export function DashboardPage() {
         </div>
         <p className="max-w-sm text-sm leading-6 text-muted">
           {account.is_demo ? "正在使用精心准备的演示游戏库。" : "你的 Steam 游戏库已经接入。"}
-          数据只读，本地策展随时可用。
+          数据只读，规则策展随时可用。
         </p>
       </div>
 

@@ -1,17 +1,16 @@
 import type {
+  AuthConfig,
   Capabilities,
   CollectionSuggestion,
   Dashboard,
   Game,
   GameList,
   Recommendation,
+  SessionUser,
   SyncResult,
 } from "@/lib/types";
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "http://localhost:8000").replace(
-  /\/$/,
-  "",
-);
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/$/, "");
 const API_PREFIX = `${API_BASE_URL}/api/v1`;
 
 interface ApiErrorShape {
@@ -32,6 +31,7 @@ export class ApiError extends Error {
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_PREFIX}${path}`, {
     ...init,
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
       ...init?.headers,
@@ -44,10 +44,19 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
       response.status,
     );
   }
+  if (response.status === 204) return undefined as T;
   return response.json() as Promise<T>;
 }
 
 export const api = {
+  authConfig: () => request<AuthConfig>("/auth/config"),
+  me: () => request<SessionUser>("/auth/me"),
+  googleLogin: (credential: string) =>
+    request<SessionUser>("/auth/google", {
+      method: "POST",
+      body: JSON.stringify({ credential }),
+    }),
+  logout: () => request<void>("/auth/logout", { method: "POST", body: "{}" }),
   dashboard: () => request<Dashboard>("/dashboard"),
   capabilities: () => request<Capabilities>("/capabilities"),
   games: (search: URLSearchParams) => request<GameList>(`/games?${search.toString()}`),

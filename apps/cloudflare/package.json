@@ -1,0 +1,14 @@
+{
+  "name": "@begamer/cloudflare",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "db:local": "uv run pywrangler d1 migrations apply begamer --local",
+    "deploy": "uv run pywrangler deploy",
+    "dev": "uv run pywrangler dev",
+    "test": "uv run pytest"
+  },
+  "devDependencies": {
+    "wrangler": "^4.114.0"
+  }
+}

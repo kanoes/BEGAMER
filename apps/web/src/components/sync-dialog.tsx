@@ -79,7 +79,7 @@ export function SyncDialog() {
             <div className="rounded-xl border bg-raised/55 p-4">
               <div className="flex items-center gap-2 text-sm font-semibold">
                 <Database aria-hidden="true" className="size-4 text-ai" />
-                本地优先
+                私有云端
               </div>
               <p className="mt-2 text-xs leading-5 text-muted">
                 同步异常时不会删除已有数据或标记。

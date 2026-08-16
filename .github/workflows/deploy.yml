@@ -1,0 +1,53 @@
+name: deploy-cloudflare
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: begamer-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.deployment-url }}
+    env:
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.13"
+          enable-cache: true
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: uv sync --frozen --all-groups
+      - run: uv sync --project apps/cloudflare --frozen --all-groups
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check
+      - run: pnpm test
+      - run: pnpm build
+      - name: Apply D1 migrations
+        working-directory: apps/cloudflare
+        run: uv run pywrangler d1 migrations apply begamer --remote
+      - id: deploy
+        name: Deploy Worker and static assets
+        working-directory: apps/cloudflare
+        run: |
+          output="$(uv run pywrangler deploy)"
+          printf '%s\n' "$output"
+          url="$(printf '%s\n' "$output" | sed -nE 's#.*(https://[^ ]+\.workers\.dev).*#\1#p' | tail -1)"
+          printf 'deployment-url=%s\n' "$url" >> "$GITHUB_OUTPUT"
