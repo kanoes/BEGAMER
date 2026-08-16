@@ -33,13 +33,21 @@ export function SyncDialog() {
   };
 
   const isConfigured = capabilities.data?.steam_configured ?? false;
+  const trimmedSteamId = steamId.trim();
+  const isSteamIdInputValid = trimmedSteamId.length === 0 || /^\d{17}$/.test(trimmedSteamId);
+  const showSteamIdError = !isSteamIdInputValid;
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
-        <Button variant="secondary" size="sm" className="hidden sm:inline-flex">
+        <Button
+          variant="secondary"
+          size="icon"
+          aria-label="同步 Steam"
+          className="sm:h-9 sm:min-h-9 sm:w-auto sm:px-3"
+        >
           <RefreshCw aria-hidden="true" className="size-3.5" />
-          同步 Steam
+          <span className="hidden sm:inline">同步 Steam</span>
         </Button>
       </Dialog.Trigger>
       <Dialog.Portal>
@@ -98,12 +106,21 @@ export function SyncDialog() {
               id="steam-id"
               value={steamId}
               onChange={(event) => setSteamId(event.target.value)}
-              aria-describedby="steam-id-help"
+              aria-describedby={showSteamIdError ? "steam-id-help steam-id-error" : "steam-id-help"}
+              aria-invalid={showSteamIdError}
+              autoComplete="off"
               inputMode="numeric"
+              maxLength={17}
               pattern="[0-9]{17}"
               placeholder="7656119xxxxxxxxxx"
-              className="mt-3 h-12 w-full rounded-xl border border-white/10 bg-background/70 px-4 font-mono text-sm text-foreground outline-none transition focus:border-brand/60 focus:ring-3 focus:ring-brand/20"
+              className="mt-3 h-12 w-full rounded-xl border border-white/10 bg-background/70 px-4 font-mono text-sm text-foreground outline-none transition focus:border-brand/60 focus:ring-3 focus:ring-brand/20 aria-invalid:border-danger/70 aria-invalid:focus:ring-danger/20"
             />
+            {showSteamIdError ? (
+              <p id="steam-id-error" role="alert" className="mt-2 text-xs leading-5 text-danger">
+                这不是 SteamID64。这里只能填写 17 位纯数字；32 位十六进制字符串是 API Key，
+                不应填在这里。
+              </p>
+            ) : null}
 
             <div aria-live="polite" className="mt-3 min-h-6 text-sm">
               {sync.isSuccess ? (
@@ -125,7 +142,10 @@ export function SyncDialog() {
                 {demo.isPending ? <LoaderCircle className="size-4 animate-spin" /> : null}
                 使用演示数据
               </Button>
-              <Button type="submit" disabled={!isConfigured || sync.isPending}>
+              <Button
+                type="submit"
+                disabled={!isConfigured || !isSteamIdInputValid || sync.isPending}
+              >
                 {sync.isPending ? <LoaderCircle className="size-4 animate-spin" /> : null}
                 {sync.isPending ? "正在同步…" : "开始安全同步"}
               </Button>
